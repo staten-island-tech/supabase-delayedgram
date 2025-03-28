@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import ProfileView from '../views/ProfileView.vue'
-import CreatePostView from '../views/CreatePostView.vue'
-import FollowerView from '../views/FollowerView.vue'
+import ProfileView from '@/views/ProfileView.vue'
+import CreatePostView from '@/views/CreatePostView.vue'
+import FollowerView from '@/views/FollowerView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -25,8 +25,8 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/followers',
-      name: 'Followers',
+      path: '/follower',
+      name: 'Follower',
       component: FollowerView,
     },
     {
