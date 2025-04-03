@@ -10,7 +10,6 @@ export interface User {
     password: string;
   }
 
-
 export const useAuthStore = defineStore('auth', () => {
   const users = ref<User[]>([]);  // List of registered users
   const user = ref<User | null>(null);  // Logged-in user
