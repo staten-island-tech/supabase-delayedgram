@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-/* import ProfileView from '@/views/ProfileView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 import CreatePostView from '@/views/CreatePostView.vue'
-import FollowerView from '@/views/FollowerView.vue' */
+import FollowerView from '@/views/FollowerView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -19,7 +19,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
-  /*{
+  {
       path: '/profile',
       name: 'Profile',
       component: ProfileView,
@@ -33,7 +33,7 @@ const router = createRouter({
       path: '/post',
       name: 'Post',
       component: CreatePostView,
-    }, */
+    }, 
   ],
 })
 
