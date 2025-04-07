@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import ProfileView from '@/views/ProfileView.vue'
-import CreatePostView from '@/views/CreatePostView.vue'
-import FollowerView from '@/views/FollowerView.vue'
-import LoginPage from '@/views/LoginPage.vue'
+import ProfileView from '../views/ProfileView.vue'
+import CreatePostView from '../views/CreatePostView.vue'
+import FollowerView from '../views/FollowerView.vue'
+import LoginPage from '../views/LoginPage.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -25,7 +25,7 @@ const router = createRouter({
   {
       path: '/profile',
       name: 'Profile',
-      component: ProfileView,
+      component: ProfileView,          
     },
     {
       path: '/follower',
