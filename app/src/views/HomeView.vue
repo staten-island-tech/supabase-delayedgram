@@ -1,4 +1,16 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { supabase } from '../supabaseclient'
+
+onMounted(async () => {
+  const { data, error } = await supabase.from('login info').select('*').limit(1)
+  if (error) {
+    console.error('Connection test failed:', error.message)
+  } else {
+    console.log('Supabase connected. Data:', data)
+  }
+})
+</script>
 
 <template>
   <main>
