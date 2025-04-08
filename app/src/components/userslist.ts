@@ -1,11 +1,11 @@
 import { reactive } from 'vue'
 import { ref } from 'vue'
 import { defineStore } from 'pinia';
-const users = reactive({})
+export const users = reactive([])
 let usercount = 0
 export interface User {
     id: number;
-    name: string;
+    username: string;
     password: string;
   }
 
@@ -14,11 +14,11 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);  // Logged-in user
   const token = ref<string | null>(localStorage.getItem('token'));  // Authentication token
 
-  const signUp = (name: string, password: string): boolean => {
-    if (users.value.find(u => u.name === name)) {
+  const signUp = (username: string, password: string): boolean => {
+    if (users.value.find(u => u.username === username)) {
       return false;  // Prevent duplicate names
     }
-    const newUser: User = { id: usercount + 1, name, password };
+    const newUser: User = { id: usercount + 1, username, password };
     users.value.push(newUser);
     return true;
   }; })
