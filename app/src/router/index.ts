@@ -4,14 +4,20 @@ import ProfileView from '../views/ProfileView.vue'
 import CreatePostView from '../views/CreatePostView.vue'
 import FollowerView from '../views/FollowerView.vue'
 import LoginPage from '../views/LoginPage.vue'
+import SignupView from '../views/SignupView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/login',
       name: 'login',
       component: LoginPage,
     },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: SignupView,
+    }, 
     {
       path: '/home',
       name: 'home',
@@ -24,17 +30,17 @@ const router = createRouter({
     },
   {
       path: '/profile',
-      name: 'Profile',
+      name: 'profile',
       component: ProfileView,          
     },
     {
       path: '/follower',
-      name: 'Follower',
+      name: 'follower',
       component: FollowerView,
     },
     {
       path: '/post',
-      name: 'Post',
+      name: 'post',
       component: CreatePostView,
     }, 
   ],
