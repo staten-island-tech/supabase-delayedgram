@@ -3,9 +3,17 @@ import { defineStore } from 'pinia';
 import { supabase } from '../supabaseclient';
 
 export interface User {
-  id: string;
+  id: number;
   username: string;
+  email: string;
+  password: string;
 }
+
+// Sample user data (you can replace this with dynamic data from a database or API)
+export const users: User[] = [
+  { id: 1, username: 'john_doe', email: 'john@example.com', password: 'password123' },
+  { id: 2, username: 'jane_doe', email: 'jane@example.com', password: 'securepass456' },
+];
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-400 to-pink-400">
+  <div class="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-800 to-gray-400">
     <div class="w-full max-w-sm p-6 bg-white rounded-lg shadow-lg">
       <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">LOGIN</h1>
       <form @submit.prevent="handleLogin" class="space-y-4">
@@ -21,14 +21,14 @@
         >
         <button
           type="submit"
-          class="w-full py-2 bg-blue-400 text-white font-semibold rounded-lg hover:bg-blue-500 transition duration-200 block text-center"
+          class="w-full py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-200 block text-center"
         >
           LOGIN
         </button>
         <nav class="items-center text-center">
           <router-link 
             to="/signup" 
-            class="text-blue-400 hover:text-blue-500 hover:underline transition duration-200"
+            class="text-blue-800 hover:text-blue-900 hover:underline transition duration-200"
           >
             Don't have an account? Click here to sign up!
           </router-link>
@@ -57,11 +57,7 @@ const handleLogin = () => {
     email: string;
     password: string;
   }
-  const users: User[] = [
-    { id: 1, username: 'john_doe', email: 'john@example.com', password: 'password123' },
-    { id: 2, username: 'jane_doe', email: 'jane@example.com', password: 'securepass456' },
-    // Add more users as needed
-  ];
+  const users: User[] = [];
 
   // Find the user by username or email
   const user = users.find(
