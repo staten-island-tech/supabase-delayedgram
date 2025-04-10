@@ -1,13 +1,11 @@
 <template>
-    <div>
+  <div>
     <LoginInfo />
-    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import LoginInfo from '../components/LoginInfo.vue';
+import LoginInfo from '../components/LoginInfo.vue'
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
