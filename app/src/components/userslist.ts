@@ -18,7 +18,6 @@ export const users: User[] = [
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
   const token = ref<string | null>(localStorage.getItem('token'));
-
   const signUp = async (email: string, password: string, username: string) => {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
