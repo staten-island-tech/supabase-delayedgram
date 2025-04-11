@@ -5,8 +5,8 @@ import { supabase } from '../supabaseclient';
 export interface User {
   id: number;
   username: string;
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
 }
 
 // Sample user data (you can replace this with dynamic data from a database or API)
@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       if (profileError) throw profileError;
 
-      user.value = { id: userId, username };
+      user.value = { id: Number(userId), username };
     }
   };
 
@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       if (profileError) throw profileError;
 
-      user.value = { id: userId, username: profileData.username };
+      user.value = { id: Number(userId), username: profileData.username };
     }
   };
 
@@ -77,7 +77,7 @@ export const useAuthStore = defineStore('auth', () => {
         .single();
 
       if (profileData) {
-        user.value = { id: userId, username: profileData.username };
+        user.value = { id: Number(userId), username: profileData.username };
       }
     }
   };
