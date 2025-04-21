@@ -79,15 +79,6 @@ const handleLogin = () => {
   router.push('/home')
 }
 
-const auth = useAuthStore()
-
-const handleSignup = async () => {
-  try {
-    await auth.signUp(email.value, password.value, username.value) // maybe redirect or show success
-  } catch (error) {
-    alert('Error signing up: ' + (error as Error).message)
-  }
-}
 </script>
 
 <style scoped></style>
