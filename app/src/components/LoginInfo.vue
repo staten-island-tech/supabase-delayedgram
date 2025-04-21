@@ -49,22 +49,20 @@ const usernameOrEmail = ref('')
 const password = ref('')
 
 // Access the router instance for programmatic navigation
-const router = useRouter()
-
+const router = useRouter();
+interface User {
+    id: number;
+    username: string;
+    email: string;
+    password: string;
+  }
+const users: User[] = [];
 // Handle form submission and navigation
 const handleLogin = () => {
-  interface User {
-    id: number
-    username: string
-    email: string
-    password: string
-  }
-  const users: User[] = []
-
   // Find the user by username or email
   const user = users.find(
-    (u: User) => u.username === usernameOrEmail.value || u.email === usernameOrEmail.value,
-  )
+    (u: User) => usernameOrEmail.value === u.username || usernameOrEmail.value === u.email
+  );
 
   if (!user) {
     alert("This isn't an existing account. Try signing up.")

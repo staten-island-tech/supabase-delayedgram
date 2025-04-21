@@ -4,21 +4,21 @@
   >
     <div class="w-full max-w-sm p-6 bg-white rounded-lg shadow-lg">
       <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">SIGN UP</h1>
-      <form class="space-y-4">
-        <input
+      <form @submit.prevent="handleSignUp" class="space-y-4">
+        <input v-model="email"
           required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           type="email"
           placeholder="EMAIL"
-        />
-        <input
+        >
+        <input v-model="username"
           required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           type="text"
           pattern="[A-Za-z0-9._]+"
           placeholder="USERNAME"
-        />
-        <input
+        >
+        <input v-model="password"
           required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           type="password"
@@ -45,31 +45,56 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { supabase } from '../supabaseclient' // Import Supabase client
-import { users } from '../components/userslist'
+import { supabase } from '../supabaseclient';
 
-// Define refs for form data
-const username = ref('')
-const email = ref('')
-const password = ref('')
+const username = ref('');
+const email = ref('');
+const password = ref('');
 
-// Handle form submission and store data in Supabase
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 const handleSignUp = async () => {
-  // Insert the data into the 'users' table
-  const { data, error } = await supabase
-    .from('users') // Table name
-    .insert([{ username: username.value, email: email.value, password: password.value }])
-  console.log(users)
+  try {
+    // 1. Check if user already exists
+    const { data: existingUser, error: fetchError } = await supabase
+      .from('users')
+      .select('*')
+      .or(`email.eq.${email.value},username.eq.${username.value}`)
+      .maybeSingle();
 
-  if (error) {
-    alert(`Error: ${error.message}`)
-  } else {
-    alert('User signed up successfully!')
-    // Optionally, redirect or clear the form here
-    username.value = ''
-    email.value = ''
-    password.value = ''
+    if (fetchError) throw fetchError;
+
+    if (existingUser) {
+      alert("This account already exists. Please log in.");
+      return;
+    }
+
+    // 2. Insert new user
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert([
+        {
+          username: username.value,
+          email: email.value,
+          password: password.value,
+        },
+      ]);
+
+    if (insertError) throw insertError;
+
+    alert('Sign-up successful!');
+    router.push('/home');
+
+    // Clear inputs
+    username.value = '';
+    email.value = '';
+    password.value = '';
+  } catch (err: any) {
+    // Handle all errors here
+    alert(`Sign-up failed: ${err.message}`);
+    console.error('Error during sign-up:', err);
   }
 }
 </script>
