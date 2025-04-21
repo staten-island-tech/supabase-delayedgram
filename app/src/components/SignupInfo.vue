@@ -46,6 +46,7 @@
 
 <script setup lang="ts">
 import { supabase } from '../supabaseclient';
+// import { signIn } from '../userslist'
 
 const username = ref('');
 const email = ref('');
