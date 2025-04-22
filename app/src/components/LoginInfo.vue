@@ -28,12 +28,12 @@
           LOGIN
         </button>
         <nav class="items-center text-center">
-          <router-link
+          <RouterLink
             to="/signup"
             class="text-blue-800 hover:text-blue-900 hover:underline transition duration-200"
           >
             Don't have an account? Click here to sign up!
-          </router-link>
+          </RouterLink>
         </nav>
       </form>
     </div>

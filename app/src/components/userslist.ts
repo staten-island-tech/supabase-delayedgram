@@ -1,13 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { supabase } from '../supabaseclient';
-
-export interface User {
-  id: number;
-  username: string;
-  email?: string;
-  password?: string;
-}
+import type { User } from '../components/AllInterfaces'
 
 // Sample user data (you can replace this with dynamic data from a database or API)
 export const users: User[] = [

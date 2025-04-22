@@ -32,12 +32,12 @@
           SIGN UP
         </button>
         <nav class="items-center text-center">
-          <router-link
+          <RouterLink
             to="/"
             class="text-center text-blue-800 hover:text-blue-900 hover:underline transition duration-200"
           >
             Have an account? Log in!
-          </router-link>
+          </RouterLink>
         </nav>
       </form>
     </div>
@@ -60,12 +60,15 @@ const handleSignUp = async () => {
   try {
     // 1. Check if user already exists
     const { data: existingUser, error: fetchError } = await supabase
-      .from('users')
+      .from('login_info')
       .select('*')
-      .or(`email.eq.${email.value},username.eq.${username.value}`)
+      .eq('email', email.value)
+      .eq('username', username.value)
       .maybeSingle();
 
-    if (fetchError) throw fetchError;
+    if (fetchError) {
+      console.log("fetch error:", fetchError)
+      throw fetchError;}
 
     if (existingUser) {
       alert("This account already exists. Please log in.");
@@ -74,7 +77,7 @@ const handleSignUp = async () => {
 
     // 2. Insert new user
     const { error: insertError } = await supabase
-      .from('users')
+      .from('login_info')
       .insert([
         {
           username: username.value,
@@ -83,7 +86,10 @@ const handleSignUp = async () => {
         },
       ]);
 
-    if (insertError) throw insertError;
+    if (insertError) {
+      console.log("insertError:", insertError)
+      throw insertError
+    };
 
     alert('Sign-up successful!');
     router.push('/home');
