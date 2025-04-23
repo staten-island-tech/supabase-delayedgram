@@ -43,40 +43,48 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../components/userslist'
+import type { User } from '../components/AllInterfaces'
+import { supabase } from '../supabaseclient';
 // Define refs for username/email and password
-const usernameOrEmail = ref('')
+const username = ref('')
+const email = ref('')
 const password = ref('')
 
 // Access the router instance for programmatic navigation
 const router = useRouter();
-interface User {
-    id: number;
-    username: string;
-    email: string;
-    password: string;
-  }
-const users: User[] = [];
+const users = 
 // Handle form submission and navigation
-const handleLogin = () => {
+const handleLogin = async () => {
   // Find the user by username or email
-  const user = users.find(
-    (u: User) => usernameOrEmail.value === u.username || usernameOrEmail.value === u.email
-  );
+  try{
+    const { data: existingUser, error: fetchError } = await supabase
+      .from('login_info')
+      .select('*')
+      .or(`email.eq.${email.value},username.eq.${username.value}`)
+      .maybeSingle();
 
-  if (!user) {
-    alert("This isn't an existing account. Try signing up.")
-    return
-  }
+    if (fetchError) {
+      console.log("fetch error:", fetchError)
+      throw fetchError;}
 
-  // Then, check if the password matches the existing user's password
-  if (user.password !== password.value) {
+    if (existingUser) {
+      router.push('/home')
+    }
+      // Then, check if the password matches the existing user's password
+    if (user.password !== password.value) {
     alert('Incorrect password. Please try again.')
     return
   }
-
-  // If both checks pass, navigate to HomeView
-  router.push('/home')
+    if (!user) {
+    alert("This isn't an existing account. Try signing up.")
+    return
+    }
+  }
+ catch (err: any) {
+    // Handle all errors here
+    alert(`Login failed: ${err.message}`);
+    console.error('Error during login:', err);
+  }
 }
 
 </script>
