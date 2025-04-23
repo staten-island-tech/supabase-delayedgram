@@ -46,8 +46,7 @@ import { useRouter } from 'vue-router'
 import type { User } from '../components/AllInterfaces'
 import { supabase } from '../supabaseclient';
 // Define refs for username/email and password
-const username = ref('')
-const email = ref('')
+const usernameOrEmail = ref('')
 const password = ref('')
 
 // Access the router instance for programmatic navigation
@@ -60,7 +59,7 @@ const handleLogin = async () => {
     const { data: existingUser, error: fetchError } = await supabase
       .from('login_info')
       .select('*')
-      .or(`email.eq.${email.value},username.eq.${username.value}`)
+      .or(`email.eq.${usernameOrEmail.value},username.eq.${usernameOrEmail.value}`)
       .maybeSingle();
 
     if (fetchError) {
@@ -90,3 +89,12 @@ const handleLogin = async () => {
 </script>
 
 <style scoped></style>
+const { data, error } = await supabase.auth.signUp({
+  email: 'example@email.com',
+  password: 'your-password',
+  options: {
+    data: {
+      username: 'yourUsername'
+    }
+  }
+});s
