@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+/* import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { supabase } from '../supabaseclient';
 import type { User } from '../components/AllInterfaces'
@@ -79,3 +79,56 @@ export const useAuthStore = defineStore('auth', () => {
 });
 
 
+ */
+
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { supabase } from '../supabaseclient'
+import type { SignUpData, SignInData } from '@/components/AllInterfaces'
+
+export const useAuthStore = defineStore('auth', () => {
+  const user = ref<any>(null)
+  const token = ref<string | null>(localStorage.getItem('token'))
+
+  const signUp = async ({ email, password, username }: SignUpData) => {
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) throw error
+
+    const userId = data.user?.id
+    token.value = data.session?.access_token ?? null
+    localStorage.setItem('token', token.value ?? '')
+
+    if (userId) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({ id: userId, username })
+
+      if (profileError) throw profileError
+
+      user.value = { id: userId, username }
+    }
+  }
+
+  const signIn = async ({ email, password }: SignInData) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+
+    token.value = data.session?.access_token ?? null
+    localStorage.setItem('token', token.value ?? '')
+
+    const userId = data.user?.id
+    if (userId) {
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', userId)
+        .single()
+
+      if (profileError) throw profileError
+
+      user.value = { id: userId, username: profileData.username }
+    }
+  }
+
+  return { user, token, signUp, signIn }
+})

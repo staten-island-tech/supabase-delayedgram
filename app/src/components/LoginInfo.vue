@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div
     class="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-800 to-gray-400"
   >
@@ -52,7 +52,7 @@ const password = ref('')
 
 // Access the router instance for programmatic navigation
 const router = useRouter();
-const users = 
+const users =
 // Handle form submission and navigation
 const handleLogin = async () => {
   // Find the user by username or email
@@ -86,7 +86,15 @@ const handleLogin = async () => {
     console.error('Error during login:', err);
   }
 }
-
 </script>
 
 <style scoped></style>
+ -->
+
+<template>
+  <div></div>
+</template>
+
+<script setup></script>
+
+<style lang="scss" scoped></style>
