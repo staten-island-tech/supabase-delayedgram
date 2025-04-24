@@ -56,7 +56,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
-const handleSignUp = async () => {
+const handleSignUp = async () => {                   // YES I KNOW THIS IS BAD CODE MR WHALEN
   try {
     // 1. Check if user already exists
     const { data: existingUser, error: fetchError } = await supabase

@@ -57,7 +57,7 @@ const handleLogin = async () => {
   // Find the user by username or email
   try{
     const { data: existingUser, error: fetchError } = await supabase
-      .from('login_info')
+      .from('users')
       .select('*')
       .or(`email.eq.${usernameOrEmail.value},username.eq.${usernameOrEmail.value}`)
       .maybeSingle();
