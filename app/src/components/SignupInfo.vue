@@ -47,7 +47,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { supabase } from '../supabaseclient'
 
 const username = ref('')
@@ -58,7 +58,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const handleSignUp = async () => {                   // YES I KNOW THIS IS BAD CODE MR WHALEN
+const handleSignUp = async () => {
+  // YES I KNOW THIS IS BAD CODE MR WHALEN
   try {
     // 1. Check if user already exists
     const { data: existingUser, error: fetchError } = await supabase
@@ -83,7 +84,6 @@ const handleSignUp = async () => {                   // YES I KNOW THIS IS BAD C
       {
         username: username.value,
         email: email.value,
-        password: password.value,
       },
     ])
 
@@ -105,26 +105,63 @@ const handleSignUp = async () => {                   // YES I KNOW THIS IS BAD C
     console.error('Error during sign-up:', err)
   }
 }
-</script>
+</script> -->
 
-<!-- <script setup lang="ts">
-import { useAuthStore } from '@/components/userslist'
-import type { SignUpData } from '@/components/AllInterfaces'
+<script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { supabase } from '../supabaseclient'
 
-const auth = useAuthStore()
+// Form fields
+const username = ref('')
+const email = ref('')
+const password = ref('')
 
-const signupData = ref<SignUpData>({
-  email: '',
-  password: '',
-  username: '',
-})
+const router = useRouter()
 
-const handleSignup = async () => {
+const handleSignUp = async () => {
   try {
-    await auth.signUp(signupData.value) // Redirect or success message
-  } catch (error) {
-    alert('Signup failed: ' + (error as Error).message)
+    // 1. Check if a user with this email or username already exists
+    const { data: existingUser, error: fetchError } = await supabase
+      .from('MainUserTable')
+      .select('*')
+      .or(`email.eq.${email.value},username.eq.${username.value}`)
+      .maybeSingle()
+
+    if (fetchError) {
+      console.error('Error fetching existing user:', fetchError)
+      throw new Error('Could not check existing users.')
+    }
+
+    if (existingUser) {
+      alert('This account already exists. Please log in.')
+      return
+    }
+
+    // 2. Insert new user into MainUserTable table
+    const { error: insertError } = await supabase.from('MainUserTable').insert([
+      {
+        username: username.value,
+        email: email.value,
+      },
+    ])
+
+    if (insertError) {
+      console.error('Error inserting new user:', insertError)
+      throw new Error('Could not create account. Try again later.')
+    }
+
+    alert('Sign-up successful! 🎉')
+    router.push('/home')
+
+    // 3. Clear form inputs
+    username.value = ''
+    email.value = ''
+    password.value = ''
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred.'
+    alert(`Sign-up failed: ${errorMessage}`)
+    console.error('Error during sign-up:', err)
   }
 }
-</script> -->
+</script>
