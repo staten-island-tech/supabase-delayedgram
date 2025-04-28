@@ -5,20 +5,23 @@
     <div class="w-full max-w-sm p-6 bg-white rounded-lg shadow-lg">
       <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">SIGN UP</h1>
       <form @submit.prevent="handleSignUp" class="space-y-4">
-        <input v-model="email"
+        <input
+          v-model="email"
           required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           type="email"
           placeholder="EMAIL"
-        >
-        <input v-model="username"
+        />
+        <input
+          v-model="username"
           required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           type="text"
           pattern="[A-Za-z0-9._]+"
           placeholder="USERNAME"
-        >
-        <input v-model="password"
+        />
+        <input
+          v-model="password"
           required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           type="password"
@@ -45,15 +48,14 @@
 </template>
 
 <script setup lang="ts">
-import { supabase } from '../supabaseclient';
-// import { signIn } from '../userslist'
+import { supabase } from '../supabaseclient'
 
-const username = ref('');
-const email = ref('');
-const password = ref('');
+const username = ref('')
+const email = ref('')
+const password = ref('')
 
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const handleSignUp = async () => {                   // YES I KNOW THIS IS BAD CODE MR WHALEN
@@ -64,44 +66,65 @@ const handleSignUp = async () => {                   // YES I KNOW THIS IS BAD C
       .select('*')
       .eq('email', email.value)
       .eq('username', username.value)
-      .maybeSingle();
+      .maybeSingle()
 
     if (fetchError) {
-      console.log("fetch error:", fetchError)
-      throw fetchError;}
+      console.log('fetch error:', fetchError)
+      throw fetchError
+    }
 
     if (existingUser) {
-      alert("This account already exists. Please log in.");
-      return;
+      alert('This account already exists. Please log in.')
+      return
     }
 
     // 2. Insert new user
-    const { error: insertError } = await supabase
-      .from('login_info')
-      .insert([
-        {
-          username: username.value,
-          email: email.value,
-          password: password.value,
-        },
-      ]);
+    const { error: insertError } = await supabase.from('login_info').insert([
+      {
+        username: username.value,
+        email: email.value,
+        password: password.value,
+      },
+    ])
 
     if (insertError) {
-      console.log("insertError:", insertError)
+      console.log('insertError:', insertError)
       throw insertError
-    };
+    }
 
-    alert('Sign-up successful!');
-    router.push('/home');
+    alert('Sign-up successful!')
+    router.push('/home')
 
     // Clear inputs
-    username.value = '';
-    email.value = '';
-    password.value = '';
+    username.value = ''
+    email.value = ''
+    password.value = ''
   } catch (err: any) {
     // Handle all errors here
-    alert(`Sign-up failed: ${err.message}`);
-    console.error('Error during sign-up:', err);
+    alert(`Sign-up failed: ${err.message}`)
+    console.error('Error during sign-up:', err)
   }
 }
 </script>
+
+<!-- <script setup lang="ts">
+import { useAuthStore } from '@/components/userslist'
+import type { SignUpData } from '@/components/AllInterfaces'
+import { ref } from 'vue'
+
+const auth = useAuthStore()
+
+const signupData = ref<SignUpData>({
+  email: '',
+  password: '',
+  username: '',
+})
+
+const handleSignup = async () => {
+  try {
+    await auth.signUp(signupData.value) // Redirect or success message
+  } catch (error) {
+    alert('Signup failed: ' + (error as Error).message)
+  }
+}
+</script> -->
