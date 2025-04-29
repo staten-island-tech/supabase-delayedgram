@@ -15,3 +15,8 @@ export interface SignInData {
   email: string
   password: string
 }
+
+export interface AuthUser {
+  id: string
+  username: string
+}

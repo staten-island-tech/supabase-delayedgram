@@ -112,7 +112,6 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabaseclient'
 
-// Form fields
 const username = ref('')
 const email = ref('')
 const password = ref('')
@@ -120,48 +119,49 @@ const password = ref('')
 const router = useRouter()
 
 const handleSignUp = async () => {
+  console.log(email.value, password.value)
   try {
-    // 1. Check if a user with this email or username already exists
-    const { data: existingUser, error: fetchError } = await supabase
-      .from('MainUserTable')
-      .select('*')
-      .or(`email.eq.${email.value},username.eq.${username.value}`)
-      .maybeSingle()
+    // 🔐 Step 1: Sign up the user using Supabase Auth
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email: email.value,
+      password: password.value,
+    })
 
-    if (fetchError) {
-      console.error('Error fetching existing user:', fetchError)
-      throw new Error('Could not check existing users.')
+    if (signUpError) {
+      console.error('Auth sign-up error:', signUpError)
+      throw new Error('Failed to sign up. Please try again.')
     }
 
-    if (existingUser) {
-      alert('This account already exists. Please log in.')
-      return
+    const userId = signUpData.user?.id
+    if (!userId) {
+      throw new Error('No user ID returned from Supabase Auth.')
     }
 
-    // 2. Insert new user into MainUserTable table
+    // 🧠 Step 2: Save extra info to MainUserTable
     const { error: insertError } = await supabase.from('MainUserTable').insert([
       {
+        id: userId, // Must match the auth user ID
         username: username.value,
         email: email.value,
       },
     ])
 
     if (insertError) {
-      console.error('Error inserting new user:', insertError)
-      throw new Error('Could not create account. Try again later.')
+      console.error('Error inserting into MainUserTable:', insertError)
+      throw new Error('Failed to save profile info.')
     }
 
     alert('Sign-up successful! 🎉')
     router.push('/home')
 
-    // 3. Clear form inputs
+    // 🧹 Clear inputs
     username.value = ''
     email.value = ''
     password.value = ''
   } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred.'
-    alert(`Sign-up failed: ${errorMessage}`)
-    console.error('Error during sign-up:', err)
+    const message = err instanceof Error ? err.message : 'Unknown error occurred.'
+    alert(`Sign-up failed: ${message}`)
+    console.error('Sign-up error:', err)
   }
 }
 </script>
