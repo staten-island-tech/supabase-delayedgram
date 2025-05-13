@@ -47,120 +47,34 @@
   </div>
 </template>
 
-<!-- <script setup lang="ts">
-import { supabase } from '../supabaseclient'
-
-const username = ref('')
-const email = ref('')
-const password = ref('')
-
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-const handleSignUp = async () => {
-  // YES I KNOW THIS IS BAD CODE MR WHALEN
-  try {
-    // 1. Check if user already exists
-    const { data: existingUser, error: fetchError } = await supabase
-      .from('login_info')
-      .select('*')
-      .eq('email', email.value)
-      .eq('username', username.value)
-      .maybeSingle()
-
-    if (fetchError) {
-      console.log('fetch error:', fetchError)
-      throw fetchError
-    }
-
-    if (existingUser) {
-      alert('This account already exists. Please log in.')
-      return
-    }
-
-    // 2. Insert new user
-    const { error: insertError } = await supabase.from('login_info').insert([
-      {
-        username: username.value,
-        email: email.value,
-      },
-    ])
-
-    if (insertError) {
-      console.log('insertError:', insertError)
-      throw insertError
-    }
-
-    alert('Sign-up successful!')
-    router.push('/home')
-
-    // Clear inputs
-    username.value = ''
-    email.value = ''
-    password.value = ''
-  } catch (err: any) {
-    // Handle all errors here
-    alert(`Sign-up failed: ${err.message}`)
-    console.error('Error during sign-up:', err)
-  }
-}
-</script> -->
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { supabase } from '../supabaseclient'
+import { useAuthStore } from './userlist'
 
-const username = ref('')
 const email = ref('')
+const username = ref('')
 const password = ref('')
 
 const router = useRouter()
+const auth = useAuthStore()
 
 const handleSignUp = async () => {
-  console.log(email.value, password.value)
   try {
-    // 🔐 Step 1: Sign up the user using Supabase Auth
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+    await auth.signUp({
       email: email.value,
       password: password.value,
+      username: username.value,
     })
-
-    if (signUpError) {
-      console.error('Auth sign-up error:', signUpError)
-      throw new Error('Failed to sign up. Please try again.')
-    }
-
-    const userId = signUpData.user?.id
-    if (!userId) {
-      throw new Error('No user ID returned from Supabase Auth.')
-    }
-
-    // 🧠 Step 2: Save extra info to MainUserTable
-    const { error: insertError } = await supabase.from('MainUserTable').insert([
-      {
-        id: userId, // Must match the auth user ID
-        username: username.value,
-        email: email.value,
-      },
-    ])
-
-    if (insertError) {
-      console.error('Error inserting into MainUserTable:', insertError)
-      throw new Error('Failed to save profile info.')
-    }
 
     alert('Sign-up successful! 🎉')
     router.push('/home')
 
-    // 🧹 Clear inputs
-    username.value = ''
     email.value = ''
+    username.value = ''
     password.value = ''
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error occurred.'
-    alert(`Sign-up failed: ${message}`)
+  } catch (err: any) {
+    alert(`Sign-up failed: ${err.message}`)
     console.error('Sign-up error:', err)
   }
 }
