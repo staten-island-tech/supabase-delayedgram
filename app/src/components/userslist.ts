@@ -1,75 +1,58 @@
-import { ref } from 'vue';
-import { defineStore } from 'pinia';
-import { supabase } from '../supabaseclient';
-import type { User } from '../components/AllInterfaces'
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { supabase } from '../supabaseclient'
+import type { SignUpData, SignInData, AuthUser } from '@/components/AllInterfaces'
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User | null>(null);
-  const token = ref<string | null>(localStorage.getItem('token'));
-  const signUp = async (email: string, password: string, username: string) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
+  const user = ref<AuthUser | null>(null)
+  const token = ref<string | null>(localStorage.getItem('token'))
 
-    const userId = data.user?.id;
-    token.value = data.session?.access_token ?? null;
-    localStorage.setItem('token', token.value ?? '');
+  const signUp = async ({ email, password, username }: SignUpData) => {
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) throw new Error(`Auth sign-up failed: ${error.message}`)
+
+    const userId = data.user?.id
+    token.value = data.session?.access_token ?? null
+    localStorage.setItem('token', token.value ?? '')
 
     if (userId) {
       const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({ id: userId, username });
+        .from('MainUserTable')
+        .insert({ id: userId, username })
 
-      if (profileError) throw profileError;
+      if (profileError) throw new Error(`Failed to create user profile: ${profileError.message}`)
 
-      user.value = { id: Number(userId), username };
+      user.value = { id: userId, username }
     }
-  };
+  }
 
-  const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+  const signIn = async ({ email, password }: SignInData) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw new Error(`Sign-in failed: ${error.message}`)
 
-    token.value = data.session?.access_token ?? null;
-    localStorage.setItem('token', token.value ?? '');
+    token.value = data.session?.access_token ?? null
+    localStorage.setItem('token', token.value ?? '')
 
-    const userId = data.user?.id;
+    const userId = data.user?.id
     if (userId) {
       const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
+        .from('MainUserTable')
         .select('username')
         .eq('id', userId)
-        .single();
+        .single()
 
-      if (profileError) throw profileError;
+      if (profileError) throw profileError
 
-      user.value = { id: Number(userId), username: profileData.username };
+      user.value = { id: userId, username: profileData.username }
     }
-  };
+  }
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    user.value = null;
-    token.value = null;
-    localStorage.removeItem('token');
-  };
+    await supabase.auth.signOut()
+    user.value = null
+    token.value = null
+    localStorage.removeItem('token')
+  }
 
-  const getCurrentUser = async () => {
-    const { data } = await supabase.auth.getUser();
-    const userId = data.user?.id;
-    if (userId) {
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('username')
-        .eq('id', userId)
-        .single();
-
-      if (profileData) {
-        user.value = { id: Number(userId), username: profileData.username };
-      }
-    }
-  };
-
-  return { user, token, signUp, signIn, signOut, getCurrentUser };
-});
-
-
+  return { user, token, signUp, signIn }
+})
