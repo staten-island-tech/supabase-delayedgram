@@ -16,9 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('token', token.value ?? '')
 
     if (userId) {
-      const { error: profileError } = await supabase
-        .from('MainUserTable')
-        .insert({ id: userId, username })
+      const { error: profileError } = await supabase.from('users').insert({ id: userId, username })
 
       if (profileError) throw new Error(`Failed to create user profile: ${profileError.message}`)
 
@@ -30,13 +28,15 @@ export const useAuthStore = defineStore('auth', () => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw new Error(`Sign-in failed: ${error.message}`)
 
-    token.value = data.session?.access_token ?? null
-    localStorage.setItem('token', token.value ?? '')
+    if (data.session?.access_token) {
+      token.value = data.session.access_token
+      localStorage.setItem('token', token.value)
+    }
 
     const userId = data.user?.id
     if (userId) {
       const { data: profileData, error: profileError } = await supabase
-        .from('MainUserTable')
+        .from('users')
         .select('username')
         .eq('id', userId)
         .single()
@@ -54,5 +54,5 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('token')
   }
 
-  return { user, token, signUp, signIn }
+  return { user, token, signUp, signIn, signOut }
 })

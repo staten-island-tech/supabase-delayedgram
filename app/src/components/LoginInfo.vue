@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div
     class="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-800 to-gray-400"
   >
@@ -6,7 +6,7 @@
       <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">LOGIN</h1>
       <form @submit.prevent="handleLogin" class="space-y-4">
         <input
-          v-model="usernameOrEmail"
+          v-model="email"
           required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           type="text"
@@ -40,7 +40,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { User } from '../components/AllInterfaces'
@@ -85,15 +85,39 @@ const handleLogin = async () => {
     console.error('Error during login:', err);
   }
 }
+</script> -->
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { supabase } from '../supabaseclient'
+
+const email = ref('')
+const password = ref('')
+const router = useRouter()
+
+const handleLogin = async () => {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.value,
+      password: password.value,
+    })
+
+    if (error) {
+      console.error('Login error:', error)
+      throw new Error('Invalid login credentials.')
+    }
+
+    alert('Login successful! 🎉')
+    router.push('/home')
+
+    // Clear inputs
+    email.value = ''
+    password.value = ''
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error occurred.'
+    alert(`Login failed: ${message}`)
+  }
+}
 </script>
-
 <style scoped></style>
- -->
-
-<template>
-  <div></div>
-</template>
-
-<script setup></script>
-
-<style lang="scss" scoped></style>
