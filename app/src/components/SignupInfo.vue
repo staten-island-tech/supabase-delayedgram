@@ -51,6 +51,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from './userlist'
+import { supabase } from '../supabaseclient'
 
 const email = ref('')
 const username = ref('')
