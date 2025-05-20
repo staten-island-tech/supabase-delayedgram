@@ -97,6 +97,7 @@ const password = ref('')
 const router = useRouter()
 
 const handleLogin = async () => {
+
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.value,
@@ -113,8 +114,8 @@ const handleLogin = async () => {
       throw new Error('Invalid login credentials.')
     }
 
-    alert('Login successfully.')
     router.push('/home')
+    showNotification('Login successfully.')
 
     // Clear inputs
     email.value = ''
@@ -123,6 +124,31 @@ const handleLogin = async () => {
     const message = err instanceof Error ? err.message : 'Unknown error occurred.'
     alert(`Login failed: ${message}`)
   }
+}
+function showNotification(message: string, duration = 3000) {
+  let container = document.getElementById("notification-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "notification-container";
+    container.className = "fixed top-4 left-1/2 transform -translate-x-1/2 z-50";
+    document.body.appendChild(container);
+  }
+
+  const notification = document.createElement("div");
+  notification.className = `
+    bg-[#C0BFBF] text-white px-4 py-2 rounded shadow-md mb-2
+    opacity-90 transition-opacity duration-300 ease-in-out
+  `.trim();
+  notification.textContent = message;
+
+  container.appendChild(notification);
+
+  setTimeout(() => {
+    notification.classList.add("opacity-0");
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
+  }, duration);
 }
 </script>
 <style scoped>
