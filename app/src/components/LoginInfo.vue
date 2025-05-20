@@ -103,6 +103,11 @@ const handleLogin = async () => {
       password: password.value,
     })
 
+    if (!data) {
+    alert("This isn't an existing account. Try signing up.")
+    return
+    }
+
     if (error) {
       console.error('Login error:', error)
       throw new Error('Invalid login credentials.')
@@ -135,5 +140,3 @@ h1{
   font-style: normal;
 }
 </style>
-#1B1F52
-#7A7C95

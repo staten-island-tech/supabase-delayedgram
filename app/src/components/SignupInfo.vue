@@ -80,4 +80,18 @@ const handleSignUp = async () => {
   }
 }
 </script>
-
+<style>
+form{
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+h1{
+  font-family: "Abril Fatface", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+</style>
