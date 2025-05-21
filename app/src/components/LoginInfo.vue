@@ -40,53 +40,6 @@
   </div>
 </template>
 
-<!-- <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import type { User } from '../components/AllInterfaces'
-import { supabase } from '../supabaseclient';
-// Define refs for username/email and password
-const usernameOrEmail = ref('')
-const password = ref('')
-
-// Access the router instance for programmatic navigation
-const router = useRouter();
-const users =
-// Handle form submission and navigation
-const handleLogin = async () => {
-  // Find the user by username or email
-  try{
-    const { data: existingUser, error: fetchError } = await supabase
-      .from('users')
-      .select('*')
-      .or(`email.eq.${usernameOrEmail.value},username.eq.${usernameOrEmail.value}`)
-      .maybeSingle();
-
-    if (fetchError) {
-      console.log("fetch error:", fetchError)
-      throw fetchError;}
-
-    if (existingUser) {
-      router.push('/home')
-    }
-      // Then, check if the password matches the existing user's password
-    if (user.password !== password.value) {
-    alert('Incorrect password. Please try again.')
-    return
-  }
-    if (!user) {
-    alert("This isn't an existing account. Try signing up.")
-    return
-    }
-  }
- catch (err: any) {
-    // Handle all errors here
-    alert(`Login failed: ${err.message}`);
-    console.error('Error during login:', err);
-  }
-}
-</script> -->
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
