@@ -20,3 +20,6 @@ export interface AuthUser {
   id: string
   username: string
 }
+export interface AuthState {
+  isAuthenticated: boolean;
+}

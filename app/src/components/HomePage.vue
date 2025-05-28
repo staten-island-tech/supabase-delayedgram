@@ -17,6 +17,7 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import {supabase } from '../supabaseclient'
+  
   const search = defineModel<string>()
   const searchInfo = ref('')
   
