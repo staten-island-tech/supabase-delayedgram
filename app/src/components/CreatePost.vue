@@ -23,14 +23,18 @@
 import { ref } from 'vue'
 import { supabase } from '../supabaseclient'
 
-const selectedFile = ref<File | null>(null)
 const imageUrl = ref<string | null>(null)
 const uploading = ref(false)
+
+const selectedFile = ref<File | null>(null)
 
 const handleFileChange = (event: Event) => {
   const files = (event.target as HTMLInputElement).files
   if (files && files.length > 0) {
     selectedFile.value = files[0]
+    console.log('File selected:', selectedFile.value.name)
+  } else {
+    console.log('No file selected.')
   }
 }
 
@@ -53,7 +57,7 @@ const uploadImage = async () => {
     return
   }
 
-  const { data } = supabase.storage.from('post-images').getPublicUrl(filePath)
+  const { data } = supabase.storage.from('images').getPublicUrl(filePath)
 
   imageUrl.value = data.publicUrl
   uploading.value = false
