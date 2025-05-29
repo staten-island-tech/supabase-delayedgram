@@ -1,21 +1,27 @@
 <template>
-  <div class="p-4 max-w-md mx-auto bg-white shadow rounded-lg space-y-4">
-    <h2 class="text-xl font-semibold text-gray-800">Upload an Image</h2>
+  <div class="p-4 space-y-4 max-w-md mx-auto">
+    <h2 class="text-xl font-bold">Create a New Post</h2>
 
-    <input type="file" @change="handleFileChange" accept="image/*" />
+    <input type="file" @change="handleFileChange" accept="image/*" class="block w-full" />
 
-    <button
-      @click="uploadImage"
-      :disabled="!selectedFile || uploading"
-      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-    >
-      {{ uploading ? 'Uploading...' : 'Upload Image' }}
+    <textarea
+      v-model="text"
+      rows="3"
+      placeholder="Write something..."
+      class="w-full p-2 border rounded"
+    ></textarea>
+
+    <button @click="createPost" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+      Upload Post
     </button>
 
     <div v-if="imageUrl" class="mt-4">
-      <p class="text-sm text-gray-600">Uploaded Image:</p>
-      <img :src="imageUrl" alt="Uploaded" class="mt-2 rounded shadow max-w-full h-auto" />
+      <h3 class="font-medium">Preview:</h3>
+      <img :src="imageUrl" alt="Uploaded" class="w-full max-w-xs rounded" />
+      <p class="mt-2">{{ text }}</p>
     </div>
+
+    <p v-if="error" class="text-red-500">{{ error }}</p>
   </div>
 </template>
 
@@ -23,45 +29,66 @@
 import { ref } from 'vue'
 import { supabase } from '../supabaseclient'
 
-const imageUrl = ref<string | null>(null)
-const uploading = ref(false)
+const file = ref<File | null>(null)
+const text = ref('')
+const imageUrl = ref('')
+const error = ref('')
 
-const selectedFile = ref<File | null>(null)
-
-const handleFileChange = (event: Event) => {
-  const files = (event.target as HTMLInputElement).files
-  if (files && files.length > 0) {
-    selectedFile.value = files[0]
-    console.log('File selected:', selectedFile.value.name)
-  } else {
-    console.log('No file selected.')
+const handleFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (target.files && target.files.length > 0) {
+    file.value = target.files[0]
   }
 }
 
-const uploadImage = async () => {
-  if (!selectedFile.value) return
+const createPost = async () => {
+  error.value = ''
 
-  uploading.value = true
-
-  const file = selectedFile.value
-  const filePath = `uploads/${Date.now()}-${file.name}`
-
-  const { error } = await supabase.storage
-    .from('images') // Make sure this matches your bucket name
-    .upload(filePath, file)
-
-  if (error) {
-    alert('Upload failed: ' + error.message)
-    console.error('Upload error:', error)
-    uploading.value = false
+  const user = (await supabase.auth.getUser()).data.user
+  if (!user) {
+    error.value = 'You must be signed in to post.'
     return
   }
 
-  const { data } = supabase.storage.from('images').getPublicUrl(filePath)
+  if (!file.value || !text.value.trim()) {
+    error.value = 'Image and text are required.'
+    return
+  }
 
-  imageUrl.value = data.publicUrl
-  uploading.value = false
+  const fileExt = file.value.name.split('.').pop()
+  const fileName = `${user.id}_${Date.now()}.${fileExt}`
+  console.log(user.id)
+  const filePath = `images/${fileName}`
+
+  const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file.value)
+
+  if (uploadError) {
+    error.value = `Upload failed: ${uploadError.message}`
+    return
+  }
+
+  const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(filePath)
+  const publicUrl = publicUrlData.publicUrl
+
+  const { error: insertError } = await supabase.from('posts').insert({
+    user_id: user.id,
+    image_url: publicUrl,
+    caption: text.value,
+  })
+
+  if (insertError) {
+    error.value = `Database error: ${insertError.message}`
+    return
+  }
+
+  imageUrl.value = publicUrl
+  text.value = ''
+  file.value = null
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+textarea {
+  resize: vertical;
+}
+</style>
