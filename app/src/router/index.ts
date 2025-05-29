@@ -23,6 +23,7 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeView,
+      meta: { requiresAuth : true },
     },
     {
       path: '/about',
@@ -32,7 +33,8 @@ const router = createRouter({
   {
       path: '/profile',
       name: 'profile',
-      component: ProfileView,          
+      component: ProfileView, 
+      meta: { requiresAuth : true },
     },
     {
       path: '/follower',
@@ -48,6 +50,10 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
-  if (to.meta.requiresAuth && !auth.isAuthenticated)
+  if (to.meta.requiresAuth && !auth.isAuthenticated){
+    next({ path: '/'})
+  } else {
+    next()
+  }
 });
 export default router

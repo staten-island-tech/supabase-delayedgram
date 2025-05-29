@@ -16,15 +16,36 @@
   
 <script setup lang="ts">
   import { ref } from 'vue'
-  import {supabase } from '../supabaseclient'
-  
-  const search = defineModel<string>()
-  const searchInfo = ref('')
-  
-  const submitSearch = () => {
-    searchInfo.value = search.value?? ''
-    console.log('Submitted search:', searchInfo.value)
+  import { supabase } from '../supabaseclient'
+  import type { User } from '../components/AllInterfaces'
+
+const search = defineModel<string>()
+const searchInfo = ref('')
+const results = ref<User[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
+
+const submitSearch = async () => {
+  searchInfo.value = search.value ?? ''
+  loading.value = true
+  error.value = null
+  results.value = []
+
+  if (!searchInfo.value.trim()) return
+
+  const { data, error: fetchError } = await supabase
+    .from('users')
+    .select('id, username')
+    .ilike('username', `%${searchInfo.value}%`)  // case-insensitive LIKE
+
+  if (fetchError) {
+    error.value = fetchError.message
+  } else {
+    results.value = data as User[]
   }
+
+  loading.value = false
+}
 </script>
 <style scoped>
   form {

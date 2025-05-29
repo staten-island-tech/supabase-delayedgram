@@ -1,12 +1,13 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { supabase } from '../supabaseclient'
-import type { SignUpData, SignInData, AuthUser, AuthState } from '@/components/AllInterfaces'
+import type { SignUpData, SignInData, AuthUser } from '@/components/AllInterfaces'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<AuthUser | null>(null)
   const token = ref<string | null>(localStorage.getItem('token'))
 
+  const isAuthenticated = computed(() => !!token.value)
 
   const signUp = async ({ email, password, username }: SignUpData) => {
     const { data, error } = await supabase.auth.signUp({ email, password })
@@ -18,9 +19,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     if (userId) {
       const { error: profileError } = await supabase.from('users').insert({ id: userId, username })
-
       if (profileError) throw new Error(`Failed to create user profile: ${profileError.message}`)
-
       user.value = { id: userId, username }
     }
   }
@@ -55,6 +54,6 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('token')
   }
 
-
-  return { user, token, signUp, signIn, signOut }
+  return { user, token, isAuthenticated, signUp, signIn, signOut }
 })
+
