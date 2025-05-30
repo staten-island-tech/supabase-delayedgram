@@ -57,7 +57,7 @@ const createPost = async () => {
 
   const fileExt = file.value.name.split('.').pop()
   const fileName = `${user.id}_${Date.now()}.${fileExt}`
-  console.log(user.id)
+
   const filePath = `images/${fileName}`
 
   const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file.value)

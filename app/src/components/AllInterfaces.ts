@@ -20,3 +20,10 @@ export interface AuthUser {
   id: string
   username: string
 }
+
+export interface FUser {
+  id: string
+  username: string
+  followers: number
+  following: number
+}
