@@ -1,27 +1,52 @@
 <template>
-  <div class="p-4 space-y-4 max-w-md mx-auto">
-    <h2 class="text-xl font-bold">Create a New Post</h2>
+  <div class="p-6 space-y-6 max-w-md mx-auto bg-white rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-bold text-center text-[#2D2F45]">Create a New Post</h2>
 
-    <input type="file" @change="handleFileChange" accept="image/*" class="block w-full" />
+    <!-- Hidden file input -->
+    <input
+      type="file"
+      id="fileInput"
+      @change="handleFileChange"
+      accept="image/*"
+      class="hidden"
+    />
+
+    <!-- Styled label as button -->
+    <label
+      for="fileInput"
+      class="inline-block bg-[#7A7C95] text-white text-sm font-semibold py-2 px-4 rounded-full cursor-pointer hover:bg-[#6b6d89] transition"
+    >
+      Choose Image
+    </label>
 
     <textarea
       v-model="text"
       rows="3"
       placeholder="Write something..."
-      class="w-full p-2 border rounded"
+      class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-[#7A7C95] focus:outline-none"
     ></textarea>
 
-    <button @click="createPost" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+    <p v-if="error" class="text-[#9B0B0C] text-center">{{ error }}</p>
+
+    <button
+      @click="createPost"
+      class="w-full bg-[#7A7C95] text-white font-semibold py-2 rounded-full hover:bg-[#6b6d89] transition"
+    >
       Upload Post
     </button>
 
-    <div v-if="imageUrl" class="mt-4">
-      <h3 class="font-medium">Preview:</h3>
-      <img :src="imageUrl" alt="Uploaded" class="w-full max-w-xs rounded" />
-      <p class="mt-2">{{ text }}</p>
+    <div v-if="imageUrl" class="mt-4 text-center">
+      <h3 class="font-medium text-gray-800">Preview:</h3>
+      <img :src="imageUrl" alt="Uploaded" class="w-full max-w-xs mx-auto rounded-xl shadow-md mt-2" />
+      <p class="mt-2 text-gray-700">{{ text }}</p>
     </div>
 
-    <p v-if="error" class="text-red-500">{{ error }}</p>
+    <RouterLink
+      to="/home"
+      class="block text-center bg-gray-200 text-gray-700 font-semibold py-2 rounded-full hover:bg-gray-300 transition"
+    >
+      Back to Home
+    </RouterLink>
   </div>
 </template>
 

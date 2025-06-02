@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <h1>Create Post</h1>
+  <div class="flex items-center justify-center min-h-screen bg-gray-50">
     <CreatePost />
   </div>
 </template>
@@ -9,4 +8,4 @@
 import CreatePost from '@/components/CreatePost.vue'
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>

@@ -4,6 +4,7 @@
         <h4 class="posts">{{ card.posts }}</h4>
         <h4 class="followers">{{ card.followers }}</h4>
         <h4 class="following">{{  card.following }}</h4>
+        <slot></slot>
     </div>
 </template>
 
