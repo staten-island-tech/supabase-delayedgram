@@ -11,12 +11,18 @@
       class="hidden"
     />
 
+    <div v-if="file || text" class="mt-4">
+      <h3 class="font-medium">Preview:</h3>
+      <img v-if="previewUrl" :src="previewUrl" alt="Preview" class="w-full max-w-xs rounded" />
+      <p class="mt-2 whitespace-pre-wrap">{{ text }}</p>
+    </div>
+
     <!-- Styled label as button -->
     <label
       for="fileInput"
       class="inline-block bg-[#7A7C95] text-white text-sm font-semibold py-2 px-4 rounded-full cursor-pointer hover:bg-[#6b6d89] transition"
     >
-      Choose Image
+      Choose File
     </label>
 
     <textarea
@@ -34,12 +40,6 @@
     >
       Upload Post
     </button>
-
-    <div v-if="file || text" class="mt-4">
-      <h3 class="font-medium">Preview:</h3>
-      <img v-if="previewUrl" :src="previewUrl" alt="Preview" class="w-full max-w-xs rounded" />
-      <p class="mt-2 whitespace-pre-wrap">{{ text }}</p>
-    </div>
 
     <RouterLink
       to="/home"

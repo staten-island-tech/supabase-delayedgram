@@ -11,7 +11,7 @@
           placeholder="Search for more posts, users, etc."
         />
       </div>
-      <CardProps></CardProps>
+      <CardProps class=""></CardProps>
     </div>
 </template>
   
@@ -20,6 +20,8 @@
   import { supabase } from '../supabaseclient'
   import type { User } from '../components/AllInterfaces'
   import CardProps from '../components/CardProps.vue'
+
+  const { data } = await supabase.from("users").select()
 
   const search = defineModel<string>()
   const searchInfo = ref('')
