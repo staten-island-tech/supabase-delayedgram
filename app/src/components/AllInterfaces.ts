@@ -21,5 +21,5 @@ export interface AuthUser {
   username: string
 }
 export interface AuthState {
-  isAuthenticated: boolean;
+  isAuthenticated: boolean
 }

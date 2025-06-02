@@ -1,3 +1,15 @@
+<template>
+  <main>
+    <h1>Instabamies</h1>
+
+    <router-link to="/post">
+      <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Create Post
+      </button>
+    </router-link>
+  </main>
+</template>
+
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { supabase } from '../supabaseclient'
@@ -13,9 +25,3 @@ onMounted(async () => {
   }
 })
 </script>
-
-<template>
-  <div>
-    <HomePage />
-  </div>
-</template>
