@@ -15,10 +15,10 @@
       Upload Post
     </button>
 
-    <div v-if="imageUrl" class="mt-4">
+    <div v-if="file || text" class="mt-4">
       <h3 class="font-medium">Preview:</h3>
-      <img :src="imageUrl" alt="Uploaded" class="w-full max-w-xs rounded" />
-      <p class="mt-2">{{ text }}</p>
+      <img v-if="previewUrl" :src="previewUrl" alt="Preview" class="w-full max-w-xs rounded" />
+      <p class="mt-2 whitespace-pre-wrap">{{ text }}</p>
     </div>
 
     <p v-if="error" class="text-red-500">{{ error }}</p>
@@ -32,12 +32,14 @@ import { supabase } from '../supabaseclient'
 const file = ref<File | null>(null)
 const text = ref('')
 const imageUrl = ref('')
+const previewUrl = ref<string | null>(null)
 const error = ref('')
 
 const handleFileChange = (e: Event) => {
   const target = e.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
     file.value = target.files[0]
+    previewUrl.value = URL.createObjectURL(file.value)
   }
 }
 
