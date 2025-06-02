@@ -35,10 +35,10 @@
       Upload Post
     </button>
 
-    <div v-if="imageUrl" class="mt-4 text-center">
-      <h3 class="font-medium text-gray-800">Preview:</h3>
-      <img :src="imageUrl" alt="Uploaded" class="w-full max-w-xs mx-auto rounded-xl shadow-md mt-2" />
-      <p class="mt-2 text-gray-700">{{ text }}</p>
+    <div v-if="file || text" class="mt-4">
+      <h3 class="font-medium">Preview:</h3>
+      <img v-if="previewUrl" :src="previewUrl" alt="Preview" class="w-full max-w-xs rounded" />
+      <p class="mt-2 whitespace-pre-wrap">{{ text }}</p>
     </div>
 
     <RouterLink
@@ -57,12 +57,14 @@ import { supabase } from '../supabaseclient'
 const file = ref<File | null>(null)
 const text = ref('')
 const imageUrl = ref('')
+const previewUrl = ref<string | null>(null)
 const error = ref('')
 
 const handleFileChange = (e: Event) => {
   const target = e.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
     file.value = target.files[0]
+    previewUrl.value = URL.createObjectURL(file.value)
   }
 }
 
