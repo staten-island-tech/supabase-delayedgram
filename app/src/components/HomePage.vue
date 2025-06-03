@@ -11,7 +11,9 @@
           placeholder="Search for more posts, users, etc."
         />
       </div>
-      <CardProps class=""></CardProps>
+      <CardProps class="" v-for="user in results" :key="user.id" :card="user">
+        <button class="mt-4 px-4 py-2 bg-[#7A7C95] text-white rounded-full shadow hover:bg-[#5e6075] transition duration-200">Click to view</button>
+      </CardProps>
     </div>
 </template>
   
@@ -20,8 +22,6 @@
   import { supabase } from '../supabaseclient'
   import type { User } from '../components/AllInterfaces'
   import CardProps from '../components/CardProps.vue'
-
-  const { data } = await supabase.from("users").select()
 
   const search = defineModel<string>()
   const searchInfo = ref('')
