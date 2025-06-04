@@ -71,8 +71,10 @@ const handleFileChange = (e: Event) => {
 const createPost = async () => {
   error.value = ''
 
-  const user = (await supabase.auth.getUser()).data.user
+  const { data: authData, error: authError } = await supabase.auth.getUser()
+  const user = authData?.user
   if (!user) {
+    console.error('Auth error:', authError)
     error.value = 'You must be signed in to post.'
     return
   }
@@ -84,12 +86,11 @@ const createPost = async () => {
 
   const fileExt = file.value.name.split('.').pop()
   const fileName = `${user.id}_${Date.now()}.${fileExt}`
-
   const filePath = `images/${fileName}`
 
   const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file.value)
-
   if (uploadError) {
+    console.error('Upload error:', uploadError)
     error.value = `Upload failed: ${uploadError.message}`
     return
   }
@@ -102,15 +103,41 @@ const createPost = async () => {
     image_url: publicUrl,
     caption: text.value,
   })
-
   if (insertError) {
+    console.error('Insert post error:', insertError)
     error.value = `Database error: ${insertError.message}`
     return
   }
 
+  const { data: userData, error: userError } = await supabase
+    .from('users')
+    .select('posts')
+    .eq('id', user.id)
+    .single()
+
+  if (userError || !userData) {
+    console.error('User fetch error:', userError)
+    console.error('User data:', userData)
+    error.value = `Failed to fetch current post count: ${userError?.message}`
+    return
+  }
+
+  const { error: updateError } = await supabase
+    .from('users')
+    .update({ posts: userData.posts + 1 })
+    .eq('id', user.id)
+
+  if (updateError) {
+    console.error('Post update error:', updateError)
+    error.value = `User update error: ${updateError.message}`
+    return
+  }
+
+  // Reset state
   imageUrl.value = publicUrl
   text.value = ''
   file.value = null
+  previewUrl.value = null
 }
 </script>
 
