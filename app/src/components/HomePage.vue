@@ -11,7 +11,7 @@
           placeholder="Search for more posts, users, etc."
         />
       </div>
-      <CardProps class="bg-[#e1e1e7]" v-for="user in users" :key="user.id" :card="user">
+      <CardProps class="bg-[#fafafa]" v-for="user in users" :key="user.id" :user="user">
         <button class="mt-4 px-4 py-2 bg-[#7A7C95] text-white rounded-full shadow hover:bg-[#5e6075] transition duration-200">Click to view</button>
       </CardProps>
     </div>
@@ -34,6 +34,7 @@
       console.error('Error fetching info:', error.message)
     } else {
       users.value = data
+      console.log(data)
     }
   })
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen">
+  <div class="flex items-center justify-center min-h-screen bg-[#fafafa]">
     <CreatePost />
   </div>
 </template>

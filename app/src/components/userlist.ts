@@ -28,12 +28,12 @@ export const useAuthStore = defineStore('auth', () => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw new Error(`Sign-in failed: ${error.message}`)
 
-    if (data.session?.access_token) {
+   /*  if (data.session?.access_token) {
       token.value = data.session.access_token
       localStorage.setItem('token', token.value)
-    }
-
-    const userId = data.user?.id
+    } */
+    console.log(data)
+    const userId = data.user.id
     if (userId) {
       const { data: profileData, error: profileError } = await supabase
         .from('users')
