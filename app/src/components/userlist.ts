@@ -46,7 +46,6 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = { id: userId, username: profileData.username }
     }
   }
-
   const signOut = async () => {
     await supabase.auth.signOut()
     user.value = null

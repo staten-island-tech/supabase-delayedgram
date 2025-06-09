@@ -22,9 +22,10 @@
   import { supabase } from '../supabaseclient'
   import type { User } from '../components/AllInterfaces'
   import CardProps from '../components/CardProps.vue'
+  import { useAuthStore } from './userlist'
 
-  const users = ref<User[]>([])
-
+  const auth = useAuthStore()
+  const users = auth.signIn
   onMounted(async () => {
     const { data, error } = await supabase
     .from('users')
