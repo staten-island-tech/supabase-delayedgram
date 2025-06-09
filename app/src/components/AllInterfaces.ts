@@ -3,8 +3,10 @@ export interface User {
   username: string
   email?: string
   password?: string
+  posts: number
+  followers: number
+  following: number
 }
-
 export interface SignUpData {
   email: string
   password: string

@@ -117,7 +117,7 @@ form{
     "wdth" 100;
 }
 h1{
-  font-family: "Abril Fatface", serif;
+  font-family: "Yeseva One", serif;
   font-weight: 400;
   font-style: normal;
 }

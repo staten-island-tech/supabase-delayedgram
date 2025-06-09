@@ -1,19 +1,15 @@
 <template>
-  <div class="p-4 space-y-4 max-w-md mx-auto">
-    <h2 class="text-xl font-bold">Create a New Post</h2>
+  <div class="p-6 space-y-6 max-w-md mx-auto bg-white rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-bold text-center text-[#2D2F45]">Create a New Post</h2>
 
-    <input type="file" @change="handleFileChange" accept="image/*" class="block w-full" />
-
-    <textarea
-      v-model="text"
-      rows="3"
-      placeholder="Write something..."
-      class="w-full p-2 border rounded"
-    ></textarea>
-
-    <button @click="createPost" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-      Upload Post
-    </button>
+    <!-- Hidden file input -->
+    <input
+      type="file"
+      id="fileInput"
+      @change="handleFileChange"
+      accept="image/*"
+      class="hidden"
+    />
 
     <div v-if="file || text" class="mt-4">
       <h3 class="font-medium">Preview:</h3>
@@ -21,7 +17,36 @@
       <p class="mt-2 whitespace-pre-wrap">{{ text }}</p>
     </div>
 
-    <p v-if="error" class="text-red-500">{{ error }}</p>
+    <!-- Styled label as button -->
+    <label
+      for="fileInput"
+      class="inline-block bg-[#7A7C95] text-white text-sm font-semibold py-2 px-4 rounded-full cursor-pointer hover:bg-[#6b6d89] transition"
+    >
+      Choose File
+    </label>
+
+    <textarea
+      v-model="text"
+      rows="3"
+      placeholder="Write something..."
+      class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-[#7A7C95] focus:outline-none"
+    ></textarea>
+
+    <p v-if="error" class="text-[#9B0B0C] text-center">{{ error }}</p>
+
+    <button
+      @click="createPost"
+      class="w-full bg-[#7A7C95] text-white font-semibold py-2 rounded-full hover:bg-[#6b6d89] transition"
+    >
+      Upload Post
+    </button>
+
+    <RouterLink
+      to="/home"
+      class="block text-center bg-gray-200 text-gray-700 font-semibold py-2 rounded-full hover:bg-gray-300 transition"
+    >
+      Back to Home
+    </RouterLink>
   </div>
 </template>
 
@@ -46,8 +71,10 @@ const handleFileChange = (e: Event) => {
 const createPost = async () => {
   error.value = ''
 
-  const user = (await supabase.auth.getUser()).data.user
+  const { data: authData, error: authError } = await supabase.auth.getUser()
+  const user = authData?.user
   if (!user) {
+    console.error('Auth error:', authError)
     error.value = 'You must be signed in to post.'
     return
   }
@@ -59,12 +86,11 @@ const createPost = async () => {
 
   const fileExt = file.value.name.split('.').pop()
   const fileName = `${user.id}_${Date.now()}.${fileExt}`
-
   const filePath = `images/${fileName}`
 
   const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file.value)
-
   if (uploadError) {
+    console.error('Upload error:', uploadError)
     error.value = `Upload failed: ${uploadError.message}`
     return
   }
@@ -77,15 +103,41 @@ const createPost = async () => {
     image_url: publicUrl,
     caption: text.value,
   })
-
   if (insertError) {
+    console.error('Insert post error:', insertError)
     error.value = `Database error: ${insertError.message}`
     return
   }
 
+  const { data: userData, error: userError } = await supabase
+    .from('users')
+    .select('posts')
+    .eq('id', user.id)
+    .single()
+
+  if (userError || !userData) {
+    console.error('User fetch error:', userError)
+    console.error('User data:', userData)
+    error.value = `Failed to fetch current post count: ${userError?.message}`
+    return
+  }
+
+  const { error: updateError } = await supabase
+    .from('users')
+    .update({ posts: userData.posts + 1 })
+    .eq('id', user.id)
+
+  if (updateError) {
+    console.error('Post update error:', updateError)
+    error.value = `User update error: ${updateError.message}`
+    return
+  }
+
+  // Reset state
   imageUrl.value = publicUrl
   text.value = ''
   file.value = null
+  previewUrl.value = null
 }
 </script>
 

@@ -66,8 +66,10 @@ const handleLogin = async () => {
       console.error('Login error:', error)
       throw new Error('Invalid login credentials.')
     }
-
-    router.push('/home')
+    console.log(data)
+    //save to store
+    
+   router.push('/home') 
     showNotification('Login successfully.')
 
     // Clear inputs

@@ -11,41 +11,61 @@
           placeholder="Search for more posts, users, etc."
         />
       </div>
+      <CardProps class="bg-[#fafafa]" v-for="user in users" :key="user.id" :user="user">
+        <button class="mt-4 px-4 py-2 bg-[#7A7C95] text-white rounded-full shadow hover:bg-[#5e6075] transition duration-200">Click to view</button>
+      </CardProps>
     </div>
 </template>
   
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { supabase } from '../supabaseclient'
   import type { User } from '../components/AllInterfaces'
+  import CardProps from '../components/CardProps.vue'
+  import { useAuthStore } from './userlist'
 
-const search = defineModel<string>()
-const searchInfo = ref('')
-const results = ref<User[]>([])
-const loading = ref(false)
-const error = ref<string | null>(null)
-
-const submitSearch = async () => {
-  searchInfo.value = search.value ?? ''
-  loading.value = true
-  error.value = null
-  results.value = []
-
-  if (!searchInfo.value.trim()) return
-
-  const { data, error: fetchError } = await supabase
+  const auth = useAuthStore()
+  const users = auth.signIn
+  onMounted(async () => {
+    const { data, error } = await supabase
     .from('users')
-    .select('id, username')
-    .ilike('username', `%${searchInfo.value}%`)  // case-insensitive LIKE
+    .select('*')
 
-  if (fetchError) {
-    error.value = fetchError.message
-  } else {
-    results.value = data as User[]
-  }
+    if (error) {
+      console.error('Error fetching info:', error.message)
+    } else {
+      users.value = data
+      console.log(data)
+    }
+  })
 
-  loading.value = false
+  const search = defineModel<string>()
+  const searchInfo = ref('')
+  const loading = ref(false)
+  const error = ref<string | null>(null)
+
+  const submitSearch = async () => {
+    searchInfo.value = search.value ?? ''
+    loading.value = true
+    error.value = null
+    users.value = []
+
+    if (!searchInfo.value.trim()) return
+
+    const { data, error: fetchError } = await supabase
+      .from('users')
+      .select('id, username')
+      .ilike('username', `%${searchInfo.value}%`)  // case-insensitive LIKE
+
+    if (fetchError) {
+      error.value = fetchError.message
+    } else {
+      users.value = data as User[]
+    }
+
+    loading.value = false
 }
+
 </script>
 <style scoped>
   form {
