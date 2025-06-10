@@ -50,19 +50,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from './stores/userlist'
-import { supabase } from '../../supabase/supabaseclientpabaseclient'
+import { useUserStore } from './stores/userlist'
+import { supabase } from '../components/lib/supabaseclient'
 
 const email = ref('')
 const username = ref('')
 const password = ref('')
 
 const router = useRouter()
-const auth = useAuthStore()
+const auth = useUserStore()
 
 const handleSignUp = async () => {
   try {
-    await auth.signUp({
+    await auth.login({
       email: email.value,
       password: password.value,
       username: username.value,

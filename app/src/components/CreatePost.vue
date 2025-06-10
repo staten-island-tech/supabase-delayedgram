@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { supabase } from '../../supabase/supabaseclientpabaseclient'
+import { supabase } from '../components/lib/supabaseclient'
 
 const file = ref<File | null>(null)
 const text = ref('')

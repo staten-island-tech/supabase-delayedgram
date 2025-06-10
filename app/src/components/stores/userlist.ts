@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { supabase } from '../components/lib/supabaseclient'
+import { supabase } from '@/components/lib/supabaseclient'
 import type { AppUser } from '../AllInterfaces'
 
 
