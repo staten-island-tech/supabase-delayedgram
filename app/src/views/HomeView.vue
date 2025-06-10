@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { supabase } from '../supabaseclient'
+import { supabase } from '../../supabase/supabaseclientpabaseclient'
 import HomePage from '../components/HomePage.vue'
 
 // onMounted(async () => {

@@ -50,8 +50,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from './userlist'
-import { supabase } from '../supabaseclient'
+import { useAuthStore } from './stores/userlist'
+import { supabase } from '../../supabase/supabaseclientpabaseclient'
 
 const email = ref('')
 const username = ref('')

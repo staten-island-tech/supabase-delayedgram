@@ -19,10 +19,10 @@
   
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
-  import { supabase } from '../supabaseclient'
+  import { supabase } from '../../supabase/supabaseclientpabaseclient'
   import type { User } from '../components/AllInterfaces'
   import CardProps from '../components/CardProps.vue'
-  import { useAuthStore } from './userlist'
+  import { useAuthStore } from './stores/userlist'
 
   const auth = useAuthStore()
   const users = auth.signIn

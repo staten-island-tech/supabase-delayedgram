@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { supabase } from '../supabaseclient'
+import { supabase } from '../../supabase/supabaseclientpabaseclient'
 
 const email = ref('')
 const password = ref('')

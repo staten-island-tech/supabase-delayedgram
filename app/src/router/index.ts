@@ -5,7 +5,7 @@ import CreatePostView from '../views/CreatePostView.vue'
 import FollowerView from '../views/FollowerView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SignupView from '../views/SignupView.vue'
-import { useAuthStore } from '@/components/userlist'
+import { useAuthStore } from '@/components/stores/userlist'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

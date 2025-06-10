@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { supabase } from '../supabaseclient'
+import { supabase } from '../../supabase/supabaseclientpabaseclient'
 import LoginInfo from '../components/LoginInfo.vue'
 onMounted(async () => {
   const { data, error } = await supabase.from('users').select('*').limit(1)
