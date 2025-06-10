@@ -12,16 +12,20 @@ export interface SignUpData {
   password: string
   username: string
 }
-
 export interface SignInData {
   email: string
   password: string
 }
-
 export interface AuthUser {
   id: string
-  username: string
+  email: string | null
+  username: string | null
 }
 export interface AuthState {
   isAuthenticated: boolean
+}
+export interface AppUser {
+  id: string
+  email: string
+  username: string
 }

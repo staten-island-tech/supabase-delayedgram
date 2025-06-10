@@ -1,17 +1,23 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { supabase } from '@/lib/supabaseclient'
-import type { User } from '../AllInterfaces'
+import { supabase } from '../components/lib/supabaseclient'
+import type { AppUser } from '../AllInterfaces'
 
-interface AppUser {
-  id: string
-  email: string
-  username: string
-}
+
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<AppUser | null>(null)
-  const isLoggedIn = ref(false)
+  const isLoggedIn = ref(false) //boolean for logged in or not or smth
+
+  const users = async () => {
+    const { data, error } = await supabase.from('users').select('*').limit(1)
+    if (error) {
+      console.error('Connection test failed:', error.message)
+    } else if (!data || data.length === 0) console.warn('No data returned')
+    else {
+      console.log('Supabase connected. Data:', data)
+    }
+  }
 
   const login = (userData: AppUser): void => {
     user.value = userData
@@ -63,5 +69,5 @@ export const useUserStore = defineStore('user', () => {
     initAuthListener,
   }
 })
-})
+
 

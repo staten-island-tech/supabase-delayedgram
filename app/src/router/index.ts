@@ -5,7 +5,7 @@ import CreatePostView from '../views/CreatePostView.vue'
 import FollowerView from '../views/FollowerView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SignupView from '../views/SignupView.vue'
-import { useAuthStore } from '@/components/stores/userlist'
+import { useUserStore } from '@/components/stores/userlist'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -49,8 +49,8 @@ const router = createRouter({
   ],
 })
 router.beforeEach((to, from, next) => {
-  const auth = useAuthStore()
-  if (to.meta.requiresAuth && !auth.isAuthenticated){
+  const auth = useUserStore()
+  if (to.meta.requiresAuth && !auth.isLoggedIn){
     next({ path: '/'})
   } else {
     next()

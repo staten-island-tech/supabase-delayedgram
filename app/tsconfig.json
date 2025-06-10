@@ -3,8 +3,6 @@
     "moduleResolution": "node",
     "module": "esnext",
     "target": "esnext",
-    "lib": ["ESNext", "DOM"],
-    "types": ["vite/client"]
   }, 
 
   "files": [],
