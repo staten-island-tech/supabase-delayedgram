@@ -3,18 +3,17 @@ import { ref } from 'vue'
 import { supabase } from '@/components/lib/supabaseclient'
 import type { AppUser } from '../AllInterfaces'
 
-
-
 export const useUserStore = defineStore('user', () => {
   const user = ref<AppUser | null>(null)
-  const isLoggedIn = ref(false) //boolean for logged in or not or smth
+  const isLoggedIn = ref(false)
 
   const users = async () => {
     const { data, error } = await supabase.from('users').select('*').limit(1)
     if (error) {
       console.error('Connection test failed:', error.message)
-    } else if (!data || data.length === 0) console.warn('No data returned')
-    else {
+    } else if (!data || data.length === 0) {
+      console.warn('No data returned')
+    } else {
       console.log('Supabase connected. Data:', data)
     }
   }
@@ -30,17 +29,19 @@ export const useUserStore = defineStore('user', () => {
     isLoggedIn.value = false
   }
 
-  const checkLoggedInStatus = async (): Promise<void> => {
+  const checkLoggedInStatus = async () => {
     const {
       data: { session },
     } = await supabase.auth.getSession()
 
     if (session?.user) {
-      login({
+      const userData: AppUser = {
         id: session.user.id,
-        email: session.user.email,
+        email: session.user.email ?? '',
         username: session.user.user_metadata.username,
-      })
+        password: '' // Placeholder: password isn't returned by Supabase
+      }
+      login(userData)
     } else {
       await logout()
     }
@@ -51,8 +52,9 @@ export const useUserStore = defineStore('user', () => {
       if (session?.user) {
         login({
           id: session.user.id,
-          email: session.user.email,
+          email: session.user.email ?? '',
           username: session.user.user_metadata.username,
+          password: '' // Must include to match AppUser interface
         })
       } else {
         logout()
@@ -63,11 +65,13 @@ export const useUserStore = defineStore('user', () => {
   return {
     user,
     isLoggedIn,
+    users,
     login,
     logout,
     checkLoggedInStatus,
     initAuthListener,
   }
 })
+
 
 
