@@ -6,6 +6,7 @@ import FollowerView from '../views/FollowerView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SignupView from '../views/SignupView.vue'
 import { useUserStore } from '@/components/stores/userlist'
+import { supabase } from '../components/lib/supabaseclient'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -31,7 +32,7 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
   {
-      path: '/profile',
+      path: '/profile/:id',
       name: 'profile',
       component: ProfileView, 
       meta: { requiresAuth : true },
@@ -40,20 +41,25 @@ const router = createRouter({
       path: '/follower',
       name: 'follower',
       component: FollowerView,
+      meta: { requiresAuth : true },
     },
     {
       path: '/post',
       name: 'post',
       component: CreatePostView,
+      meta: { requiresAuth : true },
     }, 
   ],
 })
-router.beforeEach((to, from, next) => {
-  const auth = useUserStore()
-  if (to.meta.requiresAuth && !auth.isLoggedIn){
-    next({ path: '/'})
-  } else {
-    next()
+
+router.beforeEach(async (to, from, next) => {
+  const session = (await supabase.auth.getSession()).data.session
+
+  if (to.meta.requiresAuth && !session) {
+    
+    return next({ path: '/' })
   }
-});
+
+  return next()
+})
 export default router

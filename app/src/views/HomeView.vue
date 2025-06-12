@@ -6,7 +6,7 @@
         Create Post
       </button>
     </RouterLink>
-    <RouterLink to="/profile">
+    <RouterLink :to="`/profile/${userid}`" v-if="userid">
       <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Profile</button>
     </RouterLink>
   </div>
@@ -16,7 +16,18 @@
 import { onMounted } from 'vue'
 import { supabase } from '../components/lib/supabaseclient'
 import HomePage from '../components/HomePage.vue'
+import { ref } from 'vue'
 
+const userid = ref<string | null>(null)
+
+onMounted(async () => {
+  const { data, error } = await supabase.auth.getUser()
+  if (error) {
+    console.error('Error fetching user:', error.message)
+    return
+  }
+  userid.value = data.user.id
+})
 // onMounted(async () => {
 //   const { data, error } = await supabase.from('users').select('*').limit(1)
 //   if (error) {
