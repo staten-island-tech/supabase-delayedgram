@@ -2,7 +2,6 @@ export interface User {
   id: string
   username: string
   email?: string
-  password?: string
   posts: number
   followers: number
   following: number
@@ -28,5 +27,4 @@ export interface AppUser {
   id: string
   email: string
   username: string
-  password:string
 }

@@ -44,10 +44,13 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../components/lib/supabaseclient'
+import { useUserStore } from '../components/stores/userlist'
 
 const email = ref('')
 const password = ref('')
 const router = useRouter()
+
+const userStore = useUserStore();
 
 const handleLogin = async () => {
 
@@ -62,14 +65,27 @@ const handleLogin = async () => {
     return
     }
 
-    if (error) {
+    /* if (error) {
       console.error('Login error:', error)
       throw new Error('Invalid login credentials.')
-    }
+    } */
     console.log(data)
     //save to store
-    
-   router.push('/home') 
+    userStore.isLoggedIn = true;
+    async function getUsername() {
+      const { data, error } = await supabase.from("users").select('username').eq('id', data.user.id).single();
+      if (error) {
+        console.log(error);
+        return null;
+      }
+      console.log(data);
+      return data;
+    }
+    const username = getUsername();
+    console.log(username);
+    const email2 = data.user.email;
+    userStore.user = { id: data.user.id, username: username , email: email2 }
+    router.push('/home') 
     showNotification('Login successfully.')
 
     // Clear inputs

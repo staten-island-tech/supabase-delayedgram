@@ -23,7 +23,7 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth : true },
+      // meta: { requiresAuth : true },
     },
     {
       path: '/about',
@@ -51,7 +51,8 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const auth = useUserStore()
   if (to.meta.requiresAuth && !auth.isLoggedIn){
-    next({ path: '/'})
+    next({ path: '/'});
+    console.log(auth);
   } else {
     next()
   }

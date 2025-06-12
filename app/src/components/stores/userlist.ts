@@ -39,7 +39,6 @@ export const useUserStore = defineStore('user', () => {
         id: session.user.id,
         email: session.user.email ?? '',
         username: session.user.user_metadata.username,
-        password: '' // Placeholder: password isn't returned by Supabase
       }
       login(userData)
     } else {
@@ -54,7 +53,6 @@ export const useUserStore = defineStore('user', () => {
           id: session.user.id,
           email: session.user.email ?? '',
           username: session.user.user_metadata.username,
-          password: '' // Must include to match AppUser interface
         })
       } else {
         logout()
