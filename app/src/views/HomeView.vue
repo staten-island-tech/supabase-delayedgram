@@ -27,6 +27,7 @@ onMounted(async () => {
     return
   }
   userid.value = data.user.id
+  console.log(userid.value)
 })
 // onMounted(async () => {
 //   const { data, error } = await supabase.from('users').select('*').limit(1)
