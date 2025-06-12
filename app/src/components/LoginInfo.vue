@@ -72,12 +72,12 @@ const handleLogin = async () => {
     //save to store
     userStore.isLoggedIn = true;
     async function getUsername() {
-      const { data, error } = await supabase.from("users").select('username').eq('id', data.user.id).single();
-      if (error) {
-        console.log(error);
+      const { usernamedata, usernameerror } = await supabase.from("users").select('username').eq('id', uernamedata.user.id).single();
+      if (usernameerror) {
+        console.log(usernameerror);
         return null;
       }
-      console.log(data);
+      console.log(usernamedata);
       return data;
     }
     const username = getUsername();
@@ -95,6 +95,8 @@ const handleLogin = async () => {
     alert(`Login failed: ${message}`)
   }
 }
+
+
 function showNotification(message: string, duration = 3000) {
   let container = document.getElementById('notification-container')
   if (!container) {
@@ -120,6 +122,7 @@ function showNotification(message: string, duration = 3000) {
     }, 300)
   }, duration)
 }
+
 </script>
 <style scoped>
 form {

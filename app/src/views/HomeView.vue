@@ -1,6 +1,5 @@
 <template>
   <div class="bg-[#fafafa]">
-    <HomePage />
     <RouterLink to="/post">
       <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
         Create Post
@@ -9,6 +8,7 @@
     <RouterLink :to="`/profile/${userid}`" v-if="userid">
       <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Profile</button>
     </RouterLink>
+    <HomePage />
   </div>
 </template>
 
@@ -40,3 +40,4 @@ onMounted(async () => {
 //   }
 // })
 </script>
+<style></style>

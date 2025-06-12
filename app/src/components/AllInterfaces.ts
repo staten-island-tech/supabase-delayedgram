@@ -28,3 +28,8 @@ export interface AppUser {
   email: string
   username: string
 }
+export interface post {
+  caption: string
+  image_url: string
+  created_at: string
+}
