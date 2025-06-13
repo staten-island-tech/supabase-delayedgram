@@ -60,12 +60,28 @@ const submitSearch = async () => {
   loading.value = true
   error.value = null
   users.value = []
+  searchInfo.value = search.value ?? ''
+  if (!searchInfo.value.trim()) {
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, username, posts, followers, following')
+    if (error) {
+      error.value = error.message
+    } else {
+      users.value = data as User[]
+    }
+    loading.value = false
+    return
+  }
+  loading.value = true
+  error.value = null
+  users.value = []
 
   if (!searchInfo.value.trim()) return
 
   const { data, error: fetchError } = await supabase
     .from('users')
-    .select('id, username')
+    .select('id, username, posts, followers, following')
     .ilike('username', `%${searchInfo.value}%`) // case-insensitive LIKE
 
   if (fetchError) {
