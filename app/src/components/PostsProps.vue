@@ -12,7 +12,6 @@
   </template>
   
   <script setup lang="ts">
-import type { Url } from 'url';
 
 defineProps<{
     post: {
