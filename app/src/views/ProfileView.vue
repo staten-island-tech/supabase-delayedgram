@@ -12,10 +12,11 @@
 
     <!-- Posts Section -->
     <div v-if="posts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div v-for="(post, index) in posts" :key="index" class="bg-white rounded-lg shadow p-4">
+<!--       <div v-for="(post, index) in posts" :key="index" class="bg-white rounded-lg shadow p-4">
         <img :src="post.image_url" alt="Post image" class="rounded w-full mb-2" />
         <p class="text-gray-700">{{ post.caption }}</p>
-      </div>
+      </div> -->
+      <PostsInfo></PostsInfo>
     </div>
     <div v-else class="text-center text-gray-500">No posts yet.</div>
 
@@ -35,6 +36,7 @@ import { ref, onMounted } from 'vue'
 import { supabase } from '../components/lib/supabaseclient'
 import type { post } from '../components/AllInterfaces'
 import { useRoute } from 'vue-router'
+import PostsInfo from '@/components/PostsInfo.vue'
 
 const route = useRoute()
 const profile = ref<any>(null)
@@ -62,7 +64,7 @@ onMounted(async () => {
     .select('image_url, caption, created_at')
     .eq('user_id', profileId)
     .order('created_at', { ascending: false })
-
+  console.log(postdata)
   if (posterror) {
     error.value = 'Failed to load posts.'
     return
