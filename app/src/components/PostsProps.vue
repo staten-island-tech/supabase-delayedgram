@@ -12,6 +12,8 @@
   </template>
   
   <script setup lang="ts">
+import type { Url } from 'url';
+
 defineProps<{
     post: {
       id: string
@@ -27,7 +29,6 @@ defineProps<{
     font-weight: 400;
     font-style: normal;
   }
-  
   h4,
   p {
     font-family: 'Cabin', sans-serif;
