@@ -11,16 +11,11 @@
     </div>
 
     <!-- Posts Section -->
-<<<<<<< HEAD
-    <div v-if="posts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center items-center">
-      <PostsInfo class="items-center text-center"></PostsInfo>
-=======
     <div v-if="posts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div v-for="(post, index) in posts" :key="index" class="bg-white rounded-lg shadow p-4">
         <img :src="post.image_url" alt="Post image" class="rounded w-full mb-2" />
         <p class="text-gray-700">{{ post.caption }}</p>
       </div>
->>>>>>> parent of 61b8ff3 (asdfasf)
     </div>
     <div v-else class="text-center text-gray-500">No posts yet.</div>
 
