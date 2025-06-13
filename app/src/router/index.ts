@@ -5,7 +5,7 @@ import CreatePostView from '../views/CreatePostView.vue'
 import FollowerView from '../views/FollowerView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SignupView from '../views/SignupView.vue'
-import { useUserStore } from '@/components/userlist'
+import { useUserStore } from '@/components/stores/userlist'
 import { supabase } from '../components/lib/supabaseclient'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
