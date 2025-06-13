@@ -24,6 +24,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   user: {
+    id: string
     username: string
     posts: number
     followers: number

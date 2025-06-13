@@ -1,7 +1,6 @@
 <template>
   <div>
     <SignupInfo />
-    <p class="">This should be visible</p>
   </div>
 </template>
 

@@ -24,7 +24,7 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeView,
-      // meta: { requiresAuth : true },
+      meta: { requiresAuth : true },
     },
     {
       path: '/about',
@@ -53,10 +53,11 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const session = (await supabase.auth.getSession()).data.session
+  const { data, error } = await supabase.auth.getSession()
+  const session = data?.session
 
   if (to.meta.requiresAuth && !session) {
-    
+    // Redirect unauthenticated users trying to access protected routes
     return next({ path: '/' })
   }
 

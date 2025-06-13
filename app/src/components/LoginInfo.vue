@@ -50,7 +50,7 @@ const email = ref('')
 const password = ref('')
 const router = useRouter()
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 const handleLogin = async () => {
   try {
@@ -59,35 +59,38 @@ const handleLogin = async () => {
       password: password.value,
     })
 
-    if (!data) {
-    alert("This isn't an existing account. Try signing up.")
-    return
-    }
-
-    /* if (error) {
-      console.error('Login error:', error)
-      throw new Error('Invalid login credentials.')
-    } */
-    console.log(data)
-    //save to store
-    userStore.isLoggedIn = true;
-    async function getUsername() {
-      const { usernamedata, usernameerror } = await supabase.from("users").select('username').eq('id', uernamedata.user.id).single();
-      if (usernameerror) {
-        console.log(usernameerror);
-        return null;
+    if (error) {
+      console.error('Login error:', error.message)
+      if (error.message.includes('Invalid login credentials')) {
+        alert('Incorrect email or password. Please try again.')
+      } else {
+        alert(`Login failed: ${error.message}`)
       }
-      console.log(usernamedata);
-      return data;
+      return
     }
-    const username = getUsername();
-    console.log(username);
-    const email2 = data.user.email;
-    userStore.user = { id: data.user.id, username: username , email: email2 }
-    router.push('/home') 
-    showNotification('Login successfully.')
 
-    // Clear inputs
+    userStore.isLoggedIn = true
+
+    const { data: usernameData, error: usernameError } = await supabase
+      .from('users')
+      .select('username')
+      .eq('id', data.user?.id)
+      .single()
+
+    if (usernameError) {
+      console.error('Error fetching username:', usernameError.message)
+    }
+
+    const email2 = data.user?.email ?? ''
+    userStore.user = {
+      id: data.user?.id ?? '',
+      username: usernameData?.username ?? '',
+      email: email2,
+    }
+
+    router.push('/home')
+    showNotification('Logged in successfully.')
+
     email.value = ''
     password.value = ''
   } catch (err) {
@@ -95,7 +98,6 @@ const handleLogin = async () => {
     alert(`Login failed: ${message}`)
   }
 }
-
 
 function showNotification(message: string, duration = 3000) {
   let container = document.getElementById('notification-container')
@@ -122,7 +124,6 @@ function showNotification(message: string, duration = 3000) {
     }, 300)
   }, duration)
 }
-
 </script>
 <style scoped>
 form {

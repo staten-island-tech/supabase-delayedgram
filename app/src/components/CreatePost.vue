@@ -2,14 +2,7 @@
   <div class="p-6 space-y-6 max-w-md mx-auto bg-white rounded-2xl shadow-lg">
     <h2 class="text-2xl font-bold text-center text-[#2D2F45]">Create a New Post</h2>
 
-    <!-- Hidden file input -->
-    <input
-      type="file"
-      id="fileInput"
-      @change="handleFileChange"
-      accept="image/*"
-      class="hidden"
-    />
+    <input type="file" id="fileInput" @change="handleFileChange" accept="image/*" class="hidden" />
 
     <div v-if="file || text" class="mt-4">
       <h3 class="font-medium">Preview:</h3>
@@ -17,7 +10,6 @@
       <p class="mt-2 whitespace-pre-wrap">{{ text }}</p>
     </div>
 
-    <!-- Styled label as button -->
     <label
       for="fileInput"
       class="inline-block bg-[#7A7C95] text-white text-sm font-semibold py-2 px-4 rounded-full cursor-pointer hover:bg-[#6b6d89] transition"
@@ -122,22 +114,38 @@ const createPost = async () => {
     return
   }
 
-  const { error: updateError } = await supabase
-    .from('users')
-    .update({ posts: userData.posts + 1 })
-    .eq('id', user.id)
-
-  if (updateError) {
-    console.error('Post update error:', updateError)
-    error.value = `User update error: ${updateError.message}`
-    return
-  }
-
-  // Reset state
   imageUrl.value = publicUrl
   text.value = ''
   file.value = null
   previewUrl.value = null
+
+  showNotification('Post created successfully!')
+}
+
+function showNotification(message: string, duration = 3000) {
+  let container = document.getElementById('notification-container')
+  if (!container) {
+    container = document.createElement('div')
+    container.id = 'notification-container'
+    container.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50'
+    document.body.appendChild(container)
+  }
+
+  const notification = document.createElement('div')
+  notification.className = `
+    bg-[#C0BFBF] text-white px-4 py-2 rounded shadow-md mb-2
+    opacity-90 transition-opacity duration-300 ease-in-out
+  `.trim()
+  notification.textContent = message
+
+  container.appendChild(notification)
+
+  setTimeout(() => {
+    notification.classList.add('opacity-0')
+    setTimeout(() => {
+      notification.remove()
+    }, 300)
+  }, duration)
 }
 </script>
 
